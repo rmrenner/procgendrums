@@ -1,12 +1,6 @@
-# CONNIE is the 3rd draft of a generative music script
-# for the Korg Volca Beats.
+# CARMEN is a variant on CONNIE that uses a different set of drum patterns as source material.
 
-# CONNIE generates 2 unique bars of randomized music at the BPM specified by tempo
-# Each bar contains 16 16th notes.
-
-# The probability that an instrument i will sound at a given step t
-# is based on how often i is triggered at time t in the eight factory preset patterns
-# of the Volca Beats.
+#These were scraped from some "Latin" FPC drum patterns in FLStudio. They ended up only using three instruments and didn't have enough variation to produce interesting results.
 
 import mido
 import time
@@ -14,9 +8,7 @@ import random
 
 #----START CLASS DEFS
 
-# An instance of instrument stores the midi message
-# necessary to make the instrument sound
-# and a table describing the probability that the instrument will sound 
+# An instance of Instrument stores the midi message necessary to make the instrument sound and a table describing the probability that the instrument will sound
 class Instrument:
 	def __init__(self, midiVal, pTable):
 		self.msg = mido.Message('note_on', note=midiVal,velocity=127,channel=9)
@@ -45,7 +37,7 @@ class Bar:
 		for i in instrumentSet:
 			self.patterns.append(Pattern(i))
 
-	# plays patterns through port at specified tempo		
+	# plays patterns through port at specified tempo
 	def play(self, port, tempo):
 		#calc time to sleep between steps:
 		hexnote = 60.0 / (tempo * 4)
@@ -58,13 +50,13 @@ class Bar:
 			#sleep a bit before hitting next step
 			time.sleep(hexnote)
 
-	# returns a new bar with a random subset of the patterns		
+	# returns a new bar with a random subset of the patterns
 	def getVariant(self):
 		#Make new bar with a null set of instruments; we'll provide our own.
 		v = Bar([])
 		v.patterns = random.sample(self.patterns, random.randint(1, len(self.patterns)))
 		return v
-		
+
 
 #-----START DATA DEFS
 
@@ -96,7 +88,7 @@ bars = []
 
 #Generate bars
 for i in range(uniqueBars):
-	bars.append(Bar(instFPCLatin))				
+	bars.append(Bar(instFPCLatin))
 
 #Playback!
 
